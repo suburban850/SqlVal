@@ -7,5 +7,4 @@ domaci-petar-nesic created by GitHub Classroom
 
 * Teretana (personalni/grupni treninzi, treneri, cenovnici, koriscnici, članarine)
 
-domaci-petar-nesic
-Y1HtatDoCkl2Lgty
+bp_tim68	CBkfgpeW																								

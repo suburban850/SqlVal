@@ -1,11 +1,10 @@
-package BP_JDBC.src.main.java.tree.implementation;
+package tree.implementation;
 
-
-import BP_JDBC.src.main.java.resource.DBNode;
-import BP_JDBC.src.main.java.resource.DBNodeComposite;
-import BP_JDBC.src.main.java.resource.implementation.InformationResource;
-import BP_JDBC.src.main.java.tree.Tree;
-import BP_JDBC.src.main.java.tree.TreeItem;
+import resource.DBNode;
+import resource.DBNodeComposite;
+import resource.implementation.InformationResource;
+import tree.Tree;
+import tree.TreeItem;
 
 import javax.swing.tree.DefaultTreeModel;
 import java.util.List;
@@ -19,7 +18,6 @@ public class TreeImplementation implements Tree {
         connectChildren(root);
         return new DefaultTreeModel(root);
     }
-
 
     private void connectChildren(TreeItem current){
 

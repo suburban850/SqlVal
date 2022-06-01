@@ -1,4 +1,4 @@
-package BP_JDBC.src.main.java.resource;
+package resource;
 
 import lombok.*;
 

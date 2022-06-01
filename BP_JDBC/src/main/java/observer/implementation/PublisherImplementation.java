@@ -1,13 +1,18 @@
-package BP_JDBC.src.main.java.observer.implementation;
+package observer.implementation;
 
-import BP_JDBC.src.main.java.observer.Notification;
-import BP_JDBC.src.main.java.observer.Publisher;
-import BP_JDBC.src.main.java.observer.Subscriber;
+
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
+import observer.Notification;
+import observer.Publisher;
+import observer.Subscriber;
 
 
 import java.util.ArrayList;
 import java.util.List;
+@Getter
 
 public class PublisherImplementation implements Publisher {
 
@@ -31,6 +36,7 @@ public class PublisherImplementation implements Publisher {
         this.subscribers.remove(sub);
     }
 
+    @SneakyThrows
     public void notifySubscribers(Notification notification) {
         if(notification == null || this.subscribers == null || this.subscribers.isEmpty())
             return;

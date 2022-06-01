@@ -1,4 +1,4 @@
-package BP_JDBC.src.main.java.observer;
+package observer;
 
 public interface Publisher {
     void addSubscriber(Subscriber sub);

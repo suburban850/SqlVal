@@ -1,7 +1,7 @@
-package BP_JDBC.src.main.java.tree;
+package tree;
 
 
-import BP_JDBC.src.main.java.resource.implementation.InformationResource;
+import resource.implementation.InformationResource;
 
 import javax.swing.tree.DefaultTreeModel;
 

@@ -1,11 +1,11 @@
-package BP_JDBC.src.main.java.resource.implementation;
+package resource.implementation;
 
-import BP_JDBC.src.main.java.resource.DBNode;
-import BP_JDBC.src.main.java.resource.DBNodeComposite;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import resource.DBNode;
+import resource.DBNodeComposite;
 
 
 @Getter

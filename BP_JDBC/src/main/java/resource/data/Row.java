@@ -1,4 +1,4 @@
-package BP_JDBC.src.main.java.resource.data;
+package resource.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

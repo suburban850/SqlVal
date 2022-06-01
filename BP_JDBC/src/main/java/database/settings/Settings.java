@@ -1,4 +1,4 @@
-package BP_JDBC.src.main.java.database.settings;
+package database.settings;
 
 public interface Settings {
 

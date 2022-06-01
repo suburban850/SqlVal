@@ -1,9 +1,9 @@
-package BP_JDBC.src.main.java.tree;
+package tree;
 
-import BP_JDBC.src.main.java.resource.DBNodeComposite;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import resource.DBNodeComposite;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
@@ -22,6 +22,7 @@ public class TreeItem<DBNode> extends DefaultMutableTreeNode {
     public TreeItem(DBNode node) {
         this.dbNode = node;
     }
+
 
     public TreeItem(DBNode dbNode, String name) {
         this.name = name;

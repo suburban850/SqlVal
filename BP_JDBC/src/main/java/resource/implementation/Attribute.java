@@ -1,9 +1,10 @@
-package BP_JDBC.src.main.java.resource.implementation;
+package resource.implementation;
 
-import BP_JDBC.src.main.java.resource.DBNode;
-import BP_JDBC.src.main.java.resource.DBNodeComposite;
-import BP_JDBC.src.main.java.resource.enums.AttributeType;
+
 import lombok.*;
+import resource.DBNode;
+import resource.DBNodeComposite;
+import resource.enums.AttributeType;
 
 import java.util.List;
 

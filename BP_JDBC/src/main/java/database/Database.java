@@ -1,16 +1,16 @@
-package BP_JDBC.src.main.java.database;
+package database;
 
 
 
-import BP_JDBC.src.main.java.resource.DBNode;
-import BP_JDBC.src.main.java.resource.data.Row;
+import resource.DBNode;
+import resource.data.Row;
 
 import java.util.List;
 
 public interface Database{
-
+    //povuci podatke
     DBNode loadResource();
-
+    //konkretni podaci vraca listu redova
     List<Row> readDataFromTable(String tableName);
 
 

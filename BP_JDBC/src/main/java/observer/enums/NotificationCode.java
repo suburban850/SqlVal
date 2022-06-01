@@ -1,6 +1,10 @@
-package BP_JDBC.src.main.java.observer.enums;
+package observer.enums;
 
 public enum NotificationCode {
     DATA_UPDATED,
-    RESOURCE_LOADED
+    RESOURCE_LOADED,
+    EDITOR,
+    VIEW,
+    BULK,
+    RUN
 }

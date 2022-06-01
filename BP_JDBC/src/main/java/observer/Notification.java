@@ -1,13 +1,13 @@
-package BP_JDBC.src.main.java.observer;
+package observer;
 
-import BP_JDBC.src.main.java.observer.enums.NotificationCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import observer.enums.NotificationCode;
 
 
 @Data
 @AllArgsConstructor
 public class Notification {
-    private NotificationCode code;
-    private Object data;
+    private NotificationCode code;//kod
+    private Object data;//za slanje
 }

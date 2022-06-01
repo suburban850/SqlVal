@@ -1,4 +1,4 @@
-package BP_JDBC.src.main.java.resource.enums;
+package resource.enums;
 
 public enum ConstraintType {
 

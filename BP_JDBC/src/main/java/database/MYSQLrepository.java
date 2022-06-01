@@ -1,46 +1,48 @@
-package BP_JDBC.src.main.java.database;
+package database;
 
 
-import BP_JDBC.src.main.java.database.settings.Settings;
-import BP_JDBC.src.main.java.resource.DBNode;
-import BP_JDBC.src.main.java.resource.data.Row;
-import BP_JDBC.src.main.java.resource.enums.AttributeType;
-import BP_JDBC.src.main.java.resource.implementation.Attribute;
-import BP_JDBC.src.main.java.resource.implementation.Entity;
-import BP_JDBC.src.main.java.resource.implementation.InformationResource;
+import database.settings.Settings;
+import gui.MainFrame;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import resource.DBNode;
+import resource.data.Row;
+import resource.enums.AttributeType;
+import resource.implementation.Attribute;
+import resource.implementation.Entity;
+import resource.implementation.InformationResource;
+import utils.DBReader;
 
 
-import javax.swing.plaf.nimbus.State;
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
-
+@Getter
+@Setter
 @Data
 public class MYSQLrepository implements Repository{
 
     private Settings settings;
-    private Connection connection;
+    private Connection connection;//!!!
 
     public MYSQLrepository(Settings settings) {
         this.settings = settings;
     }
 
-    private void initConnection() throws SQLException, ClassNotFoundException{
+    public void initConnection() throws SQLException, ClassNotFoundException{
         String ip = (String) settings.getParameter("mysql_ip");
         String database = (String) settings.getParameter("mysql_database");
         String username = (String) settings.getParameter("mysql_username");
         String password = (String) settings.getParameter("mysql_password");
         //Class.forName("net.sourceforge.jtds.jdbc.Driver");
         connection = DriverManager.getConnection("jdbc:mysql://"+ip+"/"+database,username,password);
-
-
     }
 
-    private void closeConnection(){
+    public void closeConnection(){
         try{
             connection.close();
         }
@@ -52,6 +54,7 @@ public class MYSQLrepository implements Repository{
         }
     }
 
+    //struktura i stab;p
 
     @Override
     public DBNode getSchema() {
@@ -60,15 +63,17 @@ public class MYSQLrepository implements Repository{
             this.initConnection();
 
             DatabaseMetaData metaData = connection.getMetaData();
-            InformationResource ir = new InformationResource("RAF_BP_Primer");
+            InformationResource ir = new InformationResource("tim68");
 
             String tableType[] = {"TABLE"};
-            ResultSet tables = metaData.getTables(connection.getCatalog(), null, null, tableType);
-
+            //sumiranje
+            ResultSet tables = metaData.getTables(connection.getCatalog(), null, null, tableType);//samo tabele
+            //uzima sve tabele iz baze
             while (tables.next()){
-
+                //nazivi redova
                 String tableName = tables.getString("TABLE_NAME");
                 if(tableName.contains("trace"))continue;
+                //dodavanje tabele u korenski cvor
                 Entity newTable = new Entity(tableName, ir);
                 ir.addChild(newTable);
 
@@ -93,13 +98,13 @@ public class MYSQLrepository implements Repository{
 //                        String pkColumnName = pkeys.getString("COLUMN_NAME");
 //                    }
 
-
+                    //nazivi kolona i formatiranje
                     Attribute attribute = new Attribute(columnName, newTable,
                             AttributeType.valueOf(
                                     Arrays.stream(columnType.toUpperCase().split(" "))
                                     .collect(Collectors.joining("_"))),
                             columnSize);
-                    newTable.addChild(attribute);
+                    newTable.addChild(attribute);//dodavanje naziva kolone
 
                 }
 
@@ -141,7 +146,7 @@ public class MYSQLrepository implements Repository{
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
-
+            //cursor se pomera po redovima
             while (rs.next()){
 
                 Row row = new Row();
@@ -152,16 +157,65 @@ public class MYSQLrepository implements Repository{
                 }
                 rows.add(row);
 
-
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
         finally {
-            this.closeConnection();
+           this.closeConnection();
         }
 
         return rows;
     }
+
+
+    public void write(String name)
+    {
+        try {
+            initConnection();
+            String query = "select * from bp_tim68."+name;
+            Statement preparedStatement = this.connection.createStatement();
+            ResultSet rs = preparedStatement.executeQuery(query);
+            if(rs == null) return;
+            DBReader dbReader = new DBReader();
+            dbReader.csvWriteAll(rs,name);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            closeConnection();
+        }
+
+    }
+
+    public void zabrisanje(String query)
+    {
+        try {
+            this.initConnection();
+            Statement pp  = this.connection.createStatement();
+
+            if(this.connection == null)
+            {
+                System.out.println("konekcija pale");
+                return;
+            }
+            ResultSet rs = pp.executeQuery(query);
+            if(rs != null){
+                JOptionPane.showMessageDialog(MainFrame.getInstance(),"correct ", "Bulk import",JOptionPane.WARNING_MESSAGE);
+                System.out.println("query je tacan");
+            }
+        } catch (SQLException throwables) {
+            //throwables.printStackTrace();
+            JOptionPane.showMessageDialog(MainFrame.getInstance(),"Error: " + throwables.getMessage(), "Bulk import",JOptionPane.WARNING_MESSAGE);
+            System.out.println("query je netacan");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            this.closeConnection();
+        }
+    }
+
+
 }

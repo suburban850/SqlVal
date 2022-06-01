@@ -1,6 +1,8 @@
-package BP_JDBC.src.main.java.resource;
+package resource;
+
 
 import lombok.*;
+import observer.implementation.PublisherImplementation;
 
 import javax.swing.tree.TreeNode;
 import java.util.Enumeration;
@@ -8,13 +10,17 @@ import java.util.Enumeration;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public abstract class DBNode {
+public abstract class DBNode extends PublisherImplementation {
 
     private String name;
     @ToString.Exclude
     private DBNode parent;
 
+
+    public DBNode(String name, DBNode parent) {
+        this.name = name;
+        this.parent = parent;
+    }
 
     @Override
     public boolean equals(Object obj) {

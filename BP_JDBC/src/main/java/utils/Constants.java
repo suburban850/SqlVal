@@ -1,4 +1,4 @@
-package BP_JDBC.src.main.java.utils;
+package utils;
 
 public class Constants {
 

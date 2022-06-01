@@ -1,23 +1,25 @@
-package BP_JDBC.src.main.java.app;
+package app;
 
-import BP_JDBC.src.main.java.database.Database;
-import BP_JDBC.src.main.java.database.DatabaseImplementation;
-import BP_JDBC.src.main.java.database.MYSQLrepository;
-import BP_JDBC.src.main.java.database.settings.Settings;
-import BP_JDBC.src.main.java.database.settings.SettingsImplementation;
-import BP_JDBC.src.main.java.gui.table.TableModel;
-import BP_JDBC.src.main.java.observer.Notification;
-import BP_JDBC.src.main.java.observer.enums.NotificationCode;
-import BP_JDBC.src.main.java.observer.implementation.PublisherImplementation;
 
-import BP_JDBC.src.main.java.resource.implementation.InformationResource;
-import BP_JDBC.src.main.java.tree.Tree;
-import BP_JDBC.src.main.java.tree.implementation.TreeImplementation;
-import BP_JDBC.src.main.java.utils.Constants;
+import database.Database;
+import database.DatabaseImplementation;
+import database.MYSQLrepository;
+import database.settings.Settings;
+import database.settings.SettingsImplementation;
+import gui.table.TableModel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import observer.Notification;
+import observer.enums.NotificationCode;
+import observer.implementation.PublisherImplementation;
+import resource.implementation.InformationResource;
+import tree.Tree;
+import tree.implementation.TreeImplementation;
+import utils.Constants;
 
 import javax.swing.tree.DefaultTreeModel;
+import java.sql.Connection;
 
 @Getter
 @Setter
@@ -35,6 +37,12 @@ public class AppCore extends PublisherImplementation {
         this.tableModel = new TableModel();
         this.tree = new TreeImplementation();
 
+    }
+
+    public void pulltrig()
+    {
+        Notification notification = new Notification(NotificationCode.RUN,1);
+        this.notifySubscribers(notification);
     }
 
     private Settings initSettings() {
@@ -60,6 +68,14 @@ public class AppCore extends PublisherImplementation {
         this.notifySubscribers(new Notification(NotificationCode.DATA_UPDATED, this.getTableModel()));
     }
 
+    public void smt(String query)
+    {
+        if(database instanceof DatabaseImplementation)
+        {
+            DatabaseImplementation di = (DatabaseImplementation) database;
+            di.check(query);
+        }
+    }
 
 
 

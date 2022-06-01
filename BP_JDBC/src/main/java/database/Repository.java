@@ -1,10 +1,11 @@
-package BP_JDBC.src.main.java.database;
+package database;
 
-import BP_JDBC.src.main.java.resource.DBNode;
-import BP_JDBC.src.main.java.resource.data.Row;
+
+import resource.DBNode;
+import resource.data.Row;
 
 import java.util.List;
-
+//skladiste
 public interface Repository {
 
     DBNode getSchema();

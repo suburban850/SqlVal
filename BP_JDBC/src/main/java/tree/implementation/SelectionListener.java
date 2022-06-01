@@ -1,9 +1,9 @@
-package BP_JDBC.src.main.java.tree.implementation;
+package tree.implementation;
 
 
-import BP_JDBC.src.main.java.gui.MainFrame;
-import BP_JDBC.src.main.java.resource.implementation.Entity;
-import BP_JDBC.src.main.java.tree.TreeItem;
+import gui.MainFrame;
+import resource.implementation.Entity;
+import tree.TreeItem;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;

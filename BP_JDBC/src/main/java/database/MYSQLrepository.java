@@ -16,6 +16,7 @@ import utils.DBReader;
 
 
 import javax.swing.*;
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -170,7 +171,7 @@ public class MYSQLrepository implements Repository{
     }
 
 
-    public void write(String name)
+    public void write(String name, File file)
     {
         try {
             initConnection();
@@ -179,7 +180,7 @@ public class MYSQLrepository implements Repository{
             ResultSet rs = preparedStatement.executeQuery(query);
             if(rs == null) return;
             DBReader dbReader = new DBReader();
-            dbReader.csvWriteAll(rs,name);
+            dbReader.csvWriteAll(rs,file);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {

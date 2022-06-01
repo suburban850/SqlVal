@@ -7,6 +7,7 @@ import lombok.Setter;
 import resource.DBNode;
 import resource.data.Row;
 
+import java.io.File;
 import java.util.List;
 
 @Data
@@ -40,12 +41,12 @@ public class DatabaseImplementation implements Database {
         }
     }
     //dbnode
-    public void zabr(String s)
+    public void zabr(String s, File file)
     {
         if(this.repository instanceof MYSQLrepository)
         {
             MYSQLrepository ms = (MYSQLrepository) repository;
-            ms.write(s);
+            ms.write(s,file);
         }
     }
 }

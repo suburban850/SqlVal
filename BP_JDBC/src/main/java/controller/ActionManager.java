@@ -28,8 +28,8 @@ public class ActionManager {
         exportAction =new ExportAction();
         prettyAction= new PrettyAction();
         runAction = new RunAction();
-        exportAction.setEnabled(false);
-        bulkImportAction.setEnabled(false);
+        exportAction.setEnabled(true);
+        bulkImportAction.setEnabled(true);
         prettyAction.setEnabled(false);
         runAction.setEnabled(false);
     }

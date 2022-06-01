@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 public class ExportAction extends DBAbstractAction{
 
@@ -34,6 +35,12 @@ public class ExportAction extends DBAbstractAction{
         DBNode selected = MainFrame.getInstance().getSelectedNode();
         System.out.println("NAZIV                  " + selected.getName());
        DatabaseImplementation dbi = (DatabaseImplementation) MainFrame.getInstance().getAppCore().getDatabase();
-       dbi.zabr(selected.getName());
+        JFileChooser fileChooser = new JFileChooser();
+        File file=null;
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+             file = fileChooser.getSelectedFile();
+            // save to file
+        }
+       dbi.zabr(selected.getName(),file);
     }
 }

@@ -41,9 +41,9 @@ public class DBReader {
         return rows;
     }
 
-    public void csvWriteAll(ResultSet rs,String fileName)
+    public void csvWriteAll(ResultSet rs,File file)
     {
-        try(CSVWriter writer = new CSVWriter(new FileWriter(fileName));) {
+        try(CSVWriter writer = new CSVWriter(new FileWriter(file));) {
             writer.writeAll(rs,true);
         } catch (SQLException  | IOException e) {
             e.printStackTrace();

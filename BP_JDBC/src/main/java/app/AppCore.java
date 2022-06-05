@@ -6,6 +6,7 @@ import database.DatabaseImplementation;
 import database.MYSQLrepository;
 import database.settings.Settings;
 import database.settings.SettingsImplementation;
+import gui.MainFrame;
 import gui.table.TableModel;
 import lombok.Data;
 import lombok.Getter;
@@ -13,23 +14,31 @@ import lombok.Setter;
 import observer.Notification;
 import observer.enums.NotificationCode;
 import observer.implementation.PublisherImplementation;
+import resource.DBNode;
+import resource.implementation.Entity;
 import resource.implementation.InformationResource;
 import tree.Tree;
+import tree.TreeItem;
 import tree.implementation.TreeImplementation;
 import utils.Constants;
 
+import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
+import javax.xml.stream.events.EndElement;
 import java.sql.Connection;
+import java.util.List;
 
 @Getter
 @Setter
-public class AppCore extends PublisherImplementation {
+public class AppCore extends PublisherImplementation{
 
     private Database database;
     private Settings settings;
     private TableModel tableModel;
     private DefaultTreeModel defaultTreeModel;
     private Tree tree;
+    //brisanje mozda?
+    private  TreeItem<DBNode> root;
 
     public AppCore() {
         this.settings = initSettings();
@@ -39,10 +48,20 @@ public class AppCore extends PublisherImplementation {
 
     }
 
-    public void pulltrig()
+    public void addEntity(String name, InformationResource irs)
+    {//root
+        if(irs instanceof InformationResource)
+        {
+            System.out.println("2");
+            ((InformationResource) irs).importChild(new Entity(name,irs));
+          //  SwingUtilities.updateComponentTreeUI();
+
+        }
+    }
+
+    public void bulk(List<String[]> rows, Entity entity)
     {
-        Notification notification = new Notification(NotificationCode.RUN,1);
-        this.notifySubscribers(notification);
+        this.database.bulkImport(rows,entity);
     }
 
     private Settings initSettings() {
@@ -60,12 +79,29 @@ public class AppCore extends PublisherImplementation {
         return this.tree.generateTree(ir);
     }
 
+    public DBNode getInformationResource(){
+        InformationResource ir = (InformationResource) this.database.loadResource();
+        return ir;
+    }
+
+    public void addNode(DBNode node)
+    {
+        System.out.println("DBNODEE " + node.getName());
+        TreeItem entity = new TreeItem(node,node.getName());
+        if(tree instanceof TreeImplementation)
+        {
+            TreeImplementation t = (TreeImplementation) tree;
+            TreeItem k = t.getKoren();
+            t.addtoroot(k, entity);
+        }
+    }
+
     public void readDataFromTable(String fromTable){
 
         tableModel.setRows(this.database.readDataFromTable(fromTable));
 
         //Zasto ova linija moze da ostane zakomentarisana?
-        this.notifySubscribers(new Notification(NotificationCode.DATA_UPDATED, this.getTableModel()));
+        //this.notifySubscribers(new Notification(NotificationCode.DATA_UPDATED, this.getTableModel()));
     }
 
     public void smt(String query)

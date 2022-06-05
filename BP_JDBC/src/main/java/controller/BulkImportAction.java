@@ -6,7 +6,10 @@ import lombok.SneakyThrows;
 import observer.Notification;
 import observer.enums.NotificationCode;
 import resource.DBNode;
+import resource.implementation.Entity;
+import resource.implementation.InformationResource;
 import state.EditorState;
+import tree.TreeItem;
 import utils.DBReader;
 
 import javax.swing.*;
@@ -41,11 +44,39 @@ public class BulkImportAction extends DBAbstractAction{
         // int returnValue = jfc.showSaveDialog(null);
         File selectedFile = null;
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-             selectedFile = jfc.getSelectedFile();
+            selectedFile = jfc.getSelectedFile();
             System.out.println(selectedFile.getAbsolutePath());
         }
         DBReader dbReader = new DBReader();
         List<String[]> rows;
+        //InformationResource informationResource = (InformationResource) MainFrame.getInstance().getAppCore().getInformationResource();
+        DBNode node = MainFrame.getInstance().getSelectedNode();
+        if(!(node instanceof Entity)) return;
+
+        try {
+            rows = dbReader.read(new FileReader(selectedFile));
+            MainFrame.getInstance().getAppCore().bulk(rows,(Entity)node);
+
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        }
+    }
+}
+
+
+
+
+
+
+
+        /***
+         *
+        System.out.println("1");
+        informationResource.addSubscriber(MainFrame.getInstance());
+        System.out.println("                                       "+ selectedFile.getName());
+        MainFrame.getInstance().getAppCore().addEntity(selectedFile.getName(),informationResource);
+
+
         try {
            rows = dbReader.read(new FileReader(selectedFile));
 
@@ -56,3 +87,4 @@ public class BulkImportAction extends DBAbstractAction{
     }
 
 }
+         */

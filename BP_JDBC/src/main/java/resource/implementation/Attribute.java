@@ -10,12 +10,13 @@ import java.util.List;
 
 @Getter
 @Setter
+//
 public class Attribute extends DBNodeComposite {
 
-
+    //enum za tip podataka
     private AttributeType attributeType;
-    private int length;
-    private Attribute inRelationWith;
+    private int length;//duzina tipa
+    private Attribute inRelationWith;//da li je u relaciji sa jos nekom tabelom strani kljuc
 
     public Attribute(String name, DBNode parent) {
         super(name, parent);
@@ -29,6 +30,7 @@ public class Attribute extends DBNodeComposite {
 
     @Override
     public void addChild(DBNode child) {
+        //da li ima jedno ili vise ogranicenja
         if (child != null && child instanceof AttributeConstraint){
             AttributeConstraint attributeConstraint = (AttributeConstraint) child;
             this.getChildren().add(attributeConstraint);

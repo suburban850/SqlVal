@@ -9,6 +9,7 @@ import resource.enums.ConstraintType;
 
 @Getter
 @Setter
+//
 public class AttributeConstraint extends DBNode {
 
     private ConstraintType constraintType;

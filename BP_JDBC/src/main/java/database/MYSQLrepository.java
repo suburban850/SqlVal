@@ -1,6 +1,7 @@
 package database;
 
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import database.settings.Settings;
 import gui.MainFrame;
 import lombok.Data;
@@ -17,9 +18,15 @@ import utils.DBReader;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 @Getter
@@ -29,6 +36,8 @@ public class MYSQLrepository implements Repository{
 
     private Settings settings;
     private Connection connection;//!!!
+
+    private InformationResource korentemp=null;
 
     public MYSQLrepository(Settings settings) {
         this.settings = settings;
@@ -55,6 +64,7 @@ public class MYSQLrepository implements Repository{
         }
     }
 
+
     //struktura i stab;p
 
     @Override
@@ -77,9 +87,9 @@ public class MYSQLrepository implements Repository{
                 //dodavanje tabele u korenski cvor
                 Entity newTable = new Entity(tableName, ir);
                 ir.addChild(newTable);
-
+                //add new atribute?
                 //Koje atribute imaja ova tabela?
-
+                //
                 ResultSet columns = metaData.getColumns(connection.getCatalog(), null, tableName, null);
 
                 while (columns.next()){
@@ -106,11 +116,7 @@ public class MYSQLrepository implements Repository{
                                     .collect(Collectors.joining("_"))),
                             columnSize);
                     newTable.addChild(attribute);//dodavanje naziva kolone
-
                 }
-
-
-
             }
 
 
@@ -134,6 +140,7 @@ public class MYSQLrepository implements Repository{
         return null;
     }
 
+
     @Override
     public List<Row> get(String from) {
 
@@ -147,6 +154,7 @@ public class MYSQLrepository implements Repository{
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet rs = preparedStatement.executeQuery();
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
+
             //cursor se pomera po redovima
             while (rs.next()){
 
@@ -154,10 +162,13 @@ public class MYSQLrepository implements Repository{
                 row.setName(from);
 
                 for (int i = 1; i<=resultSetMetaData.getColumnCount(); i++){
+                    //ime kolone, objekat konkretnog podatka
+                    //rs.getString(columnIndex:1)
+                    //rs.getString(employeeId)
                     row.addField(resultSetMetaData.getColumnName(i), rs.getString(i));
+
                 }
                 rows.add(row);
-
             }
         }
         catch (Exception e) {
@@ -170,7 +181,214 @@ public class MYSQLrepository implements Repository{
         return rows;
     }
 
+    private PreparedStatement buildPreparedStatement(List<String> columnNames,String tableName ) throws SQLException {
+//        columnNames.addAll(cheat(tableName));
 
+        System.out.println();
+        StringBuilder sb = new StringBuilder();
+        sb.append("insert into "+ tableName +" ");
+        List<String> types = getTypes(tableName);
+        StringBuilder sb1 = new StringBuilder();
+        sb1.append(" (");
+        //PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+
+        for(int i = 0; i<columnNames.size();i++) {
+            sb1.append(columnNames.get(i) + ", ");
+        }
+        sb1.append(")");
+        sb1.toString().trim();
+        sb1.deleteCharAt(sb1.length()-3);
+        sb.append(sb1.toString());
+        sb.append(" values ");
+
+        StringBuilder sb2 = new StringBuilder();
+        sb2.append("(");
+
+        for (int i = 0; i < columnNames.size(); i++) {
+            sb2.append("?, ");
+        }
+
+        sb2.append(")");
+        sb2.deleteCharAt(sb2.length()-3);
+        sb.append(sb2.toString());
+        String sql = sb.toString();
+        System.out.println(sql);
+
+        PreparedStatement ps = connection.prepareStatement(sql);
+
+        return ps;
+    }
+
+
+    @Override
+    public void bulkrep(List<String[]> rows,Entity entity) {
+        try {
+            this.initConnection();
+
+            String[] tableType = {"TABLE"};
+            DatabaseMetaData meta = connection.getMetaData();
+            ResultSet tables = meta.getTables(connection.getCatalog(), null, null, tableType);
+
+            List<String> columnNames = getColumnNames(entity.getName());
+            //prolazi kroz tabele u dok se ne nadje selektovana tabela
+            while (tables.next()) {
+                String tableName = tables.getString("TABLE_NAME");
+                List<String> types = new ArrayList<>();
+                //tipovi kolona
+                types.addAll(getTypes(tableName));
+                if (tableName.contains("trace")) continue;
+                if (tableName.equals(entity.getName())) {
+
+                    ResultSet columns = meta.getColumns(connection.getCatalog(), null, tableName, null);
+                    int i = 1, k = 0;
+                    //prolazi kroz tabele
+                    while (columns.next()) {
+                        String columnName = columns.getString("COLUMN_NAME");
+                        String columnType = columns.getString("TYPE_NAME");
+                        int columnSize = Integer.parseInt(columns.getString("COLUMN_SIZE"));
+                        int cnt = 0, question = 1;
+                        i = 1;
+                        //prolazi kroz csv listu, pravi atribute i zove buildPreparedStatement
+                        while (cnt < rows.get(0).length && k < rows.get(0).length && i < rows.size()) {
+                            String cell = rows.get(i)[k];// i=1 k=0 i=2 k=0 i=3 k=0 ||
+
+                            PreparedStatement ps = null;
+                            Attribute attribute = new Attribute(cell, entity, AttributeType.valueOf(Arrays.stream(columnType.toUpperCase().split(" ")).collect(Collectors.joining("_"))), columnSize);
+                            //vraca prepared statement sa values(?,?,?)
+                            ps = buildPreparedStatement( columnNames, tableName);
+                            for (int j = 1; j < rows.size(); j++) {//po redovima u csvu
+                                question = 1;
+                                int que = 0;
+                                String s[] = rows.get(j);
+                                for (int w = 0; w < s.length; w++) //po kolonama u csvu
+                                {
+                                    String sk = s[w];
+                                    if (sk == null) break;
+                                    if (que < types.size()) {
+                                        if (que == types.size() - 1) que = 0;
+
+                                        String stri = types.get(que);//tip podatka u koloni
+                                        AttributeType a = AttributeType.valueOf(Arrays.stream((stri.toUpperCase().split(" "))).collect(Collectors.joining("_")));
+                                        addAt(question, sk, a, ps);//dodavanje ps.setString...
+                                        System.out.println(question + " " + sk + " " + a);
+                                        question++;
+                                        ++que;
+                                    }
+
+                                }
+                                //dodavanje batcha i execute
+                                ps.addBatch();
+                                if (ps.execute()) System.out.println("true");
+                                else System.out.println("false");
+                            }
+                            //dodavanje deteta modelu
+                            entity.addChild(attribute);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            System.out.println("connectionclossed");
+            this.closeConnection();
+        }
+    }
+
+
+    private List<String> getTypes( String tableName) {
+        List<String> columnTypes = new ArrayList<>();
+
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
+            ResultSetMetaData rsmd = rs.getMetaData();
+
+            int columnCount = rsmd.getColumnCount();
+            for (int i = 1; i <= columnCount; i++) {
+                String name = rsmd.getColumnTypeName(i);
+                columnTypes.add(name);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        System.out.println("COLUMN TYPES");
+        for(String s: columnTypes)
+        {
+            System.out.print(s + "  ");
+        }
+        return columnTypes;
+    }
+
+    //
+    private void addAt(int q,String s,AttributeType at,PreparedStatement ps) {
+        try {
+            AttributeType type = AttributeType.valueOf(Arrays.stream(at.toString().toUpperCase().split(" ")).collect(Collectors.joining("_")));
+
+            s = s.trim();
+            if(type.equals(AttributeType.INT_UNSIGNED))
+            {
+                System.out.println("unsignedint" );
+                s.trim();
+                System.out.println(s);
+                System.out.println();
+                ps.setLong(q,Long.parseUnsignedLong(s));
+                return;
+            }
+            switch (type) {
+                case CHAR:
+                case VARCHAR:
+                case TEXT:
+                case NVARCHAR:
+                    System.out.println("varchar");
+                    ps.setString(q, s);
+                    break;
+                case DATE:
+                    Date date = new SimpleDateFormat("yyyy-mm-dd").parse(s);
+                    ps.setDate(q, (java.sql.Date) date);
+                    break;
+                case FLOAT:
+                    ps.setFloat(q, Float.parseFloat(s));
+                    break;
+                case REAL:
+                case SMALLINT:
+                    ps.setShort(q, Short.parseShort(s));
+                    break;
+                case BIT:
+                    ps.setBoolean(q, Boolean.parseBoolean(s));
+                    break;
+                case BIGINT:
+                    ps.setInt(q, Math.toIntExact(Long.parseLong(s)));
+                    break;
+                case NUMERIC:
+                case DECIMAL:
+                    ps.setDouble(q, Double.parseDouble(s));
+                    break;
+                case INT:
+                    System.out.println("int");
+                    ps.setInt(q, Integer.parseInt(s));
+                    break;
+                case IMAGE:
+                    byte[] byteData = s.getBytes("UTF-8");//Better to specify encoding
+                    Blob blobData = connection.createBlob();
+                    blobData.setBytes(1, byteData);
+                    ps.setBlob(q, blobData);
+                    break;
+
+            }
+        }catch (ParseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    //todo getLastSelectedPathComponent
     public void write(String name, File file)
     {
         try {
@@ -186,11 +404,40 @@ public class MYSQLrepository implements Repository{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }finally {
-            closeConnection();
+            this.closeConnection();
         }
 
     }
 
+
+    private List<String> getColumnNames( String tableName) {
+        List<String> columnNames = new ArrayList<>();
+
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
+            ResultSetMetaData rsmd = rs.getMetaData();
+
+            int columnCount = rsmd.getColumnCount();
+            for (int i = 1; i <= columnCount; i++ ) {
+                String name = rsmd.getColumnName(i);
+                if(!columnNames.contains(name))
+                    columnNames.add(name);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        System.out.println("COLUMN NAMES");
+        for(String s : columnNames)
+        {
+            System.out.print( " " + s);
+        }
+        return columnNames;
+    }
+
+
+    //privremeni queri checker cisto radi provere iskaza i podataka
     public void zabrisanje(String query)
     {
         try {

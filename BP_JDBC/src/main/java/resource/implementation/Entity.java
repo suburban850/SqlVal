@@ -10,6 +10,7 @@ import resource.DBNodeComposite;
 
 @Getter
 @Setter
+//tabela
 public class Entity extends DBNodeComposite {
 
     public Entity(String name, DBNode parent) {

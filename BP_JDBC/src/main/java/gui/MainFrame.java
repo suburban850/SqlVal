@@ -8,23 +8,31 @@ import gui.toolbar.ToolBar;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import main.java.app.Main;
 import observer.Notification;
 import observer.Subscriber;
 import observer.enums.NotificationCode;
 import resource.DBNode;
+import resource.implementation.Entity;
+import resource.implementation.InformationResource;
 import state.EditorState;
 import state.StateManager;
 import state.ViewState;
+import tree.Tree;
 import tree.TreeItem;
 import tree.implementation.SelectionListener;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 
 @Getter
 @Setter
@@ -55,7 +63,6 @@ public class MainFrame extends JFrame implements Subscriber {
     private void initStateManager(){stateManager = new StateManager();}
 
 
-
     public static MainFrame getInstance(){
         if (instance==null){
             instance=new MainFrame();
@@ -63,7 +70,7 @@ public class MainFrame extends JFrame implements Subscriber {
             instance.initActionManager();
             instance.initStateManager();
             instance.initialise();
-
+            //instance.getAppCore().getInformationResource().addSubscriber(instance);
         }
         return instance;
     }
@@ -126,9 +133,13 @@ public class MainFrame extends JFrame implements Subscriber {
 
         this.appCore = appCore;
         this.jTable.setModel(appCore.getTableModel());
+
         initialiseTree();
         instance.treeIcon();
         this.appCore.addSubscriber(this);
+
+
+
 
         repaint();
         revalidate();
@@ -144,7 +155,11 @@ public class MainFrame extends JFrame implements Subscriber {
         revalidate();
     }
     private void initialiseTree() {
+       // ((InformationResource)appCore.getInformationResource()).addSubscriber(this);
         DefaultTreeModel defaultTreeModel = appCore.loadResource();
+
+        //addsubroot((InformationResource) appCore.getInformationResource());
+        //instance.getAppCore().getInformationResource().addSubscriber(instance);
         jTree = new JTree(defaultTreeModel);
         jTree.setBackground(new Color(0xB9EBF7FF, true));
         jTree.addTreeSelectionListener(new SelectionListener());
@@ -158,10 +173,54 @@ public class MainFrame extends JFrame implements Subscriber {
     }
 
 
+    private void insertnode(TreeItem root,TreeItem node)
+    {
+        root.insert(node, 1);
+    }
+
     public DBNode getSelectedNode()
     {
         return ((TreeItem<DBNode>)this.jTree.getLastSelectedPathComponent()).getDbNode();
     }
+
+
+    public static void visitAllNodes(TreeNode node) {
+        System.out.println(node);
+        if (node.getChildCount() >= 0) {
+            for (Enumeration e = node.children(); e.hasMoreElements(); ) {
+                TreeItem n = (TreeItem) e.nextElement();
+                visitAllNodes(n);
+            }
+        }
+    }
+
+
+
+    public void traverse(JTree tree) {
+        TreeModel model = tree.getModel();
+        if (model != null) {
+            Object root = model.getRoot();
+            System.out.println(root.toString());
+            walk(model,root);
+        }
+        else
+            System.out.println("Tree is empty.");
+    }
+
+    protected void walk(TreeModel model, Object o){
+        int  cc;
+        cc = model.getChildCount(o);
+        for( int i=0; i < cc; i++) {
+            Object child = model.getChild(o, i );
+            if (model.isLeaf(child))
+                System.out.println(child.toString());
+            else {
+                System.out.print(child.toString()+"--");
+                walk(model,child );
+            }
+        }
+    }
+
     @Override
     public void update(Notification notification) throws IOException {
         if(notification.getCode().equals(NotificationCode.EDITOR) && stateManager.getCurr() instanceof ViewState)
@@ -206,9 +265,16 @@ public class MainFrame extends JFrame implements Subscriber {
             {
                 e.printStackTrace();
             }
-        }else if(notification.getCode().equals(NotificationCode.RUN))
+        }else if(notification.getCode().equals(NotificationCode.CREATE_NODE))
         {
+            if(!(notification.getData() instanceof Entity)) return;
+            else {
+                appCore.addNode((Entity)notification.getData());
+                DefaultTreeModel df = (DefaultTreeModel) jTree.getModel();
+                traverse(jTree);
 
+                jTree.expandRow(0);
+            }
         }
     }
 }

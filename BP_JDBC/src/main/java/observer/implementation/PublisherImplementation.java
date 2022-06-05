@@ -39,9 +39,14 @@ public class PublisherImplementation implements Publisher {
     @SneakyThrows
     public void notifySubscribers(Notification notification) {
         if(notification == null || this.subscribers == null || this.subscribers.isEmpty())
+        {
+            this.subscribers.isEmpty();
             return;
+        }
 
         for(Subscriber listener : subscribers){
+
+            System.out.println("update");
             listener.update(notification);
         }
     }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import resource.DBNode;
 import resource.data.Row;
+import resource.implementation.Entity;
 
 import java.io.File;
 import java.util.List;
@@ -31,6 +32,12 @@ public class DatabaseImplementation implements Database {
     public List<Row> readDataFromTable(String tableName) {
         return repository.get(tableName);
     }
+
+    @Override
+    public void bulkImport(List<String[]> rows, Entity entity) {
+        this.repository.bulkrep(rows,entity);
+    }
+
 
     public void check(String query)
     {

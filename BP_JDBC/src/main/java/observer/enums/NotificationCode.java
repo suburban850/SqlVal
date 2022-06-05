@@ -6,5 +6,6 @@ public enum NotificationCode {
     EDITOR,
     VIEW,
     BULK,
-    RUN
+    RUN,
+    CREATE_NODE
 }

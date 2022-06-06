@@ -48,7 +48,6 @@ public class MainFrame extends JFrame implements Subscriber {
     private JTree jTree;
     private JPanel left;
     private ToolBar toolBar;
-    JLabel jLabel = new JLabel("Sta");
 
     private StateManager stateManager;
     private ActionManager actionManager;
@@ -156,11 +155,7 @@ public class MainFrame extends JFrame implements Subscriber {
         revalidate();
     }
     private void initialiseTree() {
-       // ((InformationResource)appCore.getInformationResource()).addSubscriber(this);
         DefaultTreeModel defaultTreeModel = appCore.loadResource();
-
-        //addsubroot((InformationResource) appCore.getInformationResource());
-        //instance.getAppCore().getInformationResource().addSubscriber(instance);
         jTree = new JTree(defaultTreeModel);
         jTree.setBackground(new Color(0xB9EBF7FF, true));
         jTree.addTreeSelectionListener(new SelectionListener());
@@ -171,12 +166,6 @@ public class MainFrame extends JFrame implements Subscriber {
 
         add(left, BorderLayout.WEST);
 
-    }
-
-
-    private void insertnode(TreeItem root,TreeItem node)
-    {
-        root.insert(node, 1);
     }
 
     public DBNode getSelectedNode()

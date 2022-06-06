@@ -43,19 +43,5 @@ public class InformationResource extends DBNodeComposite implements Publisher {
             }
         }
     }
-    public void importChild(DBNode child)
-    {
-        if(child!=null) {
-            if (child != null && child instanceof Entity) {
-                if(!this.getChildren().contains(child)) {
-                    Entity entity = (Entity) child;
-                    this.addChild(entity);
-                    //<DBNode> node = new TreeItem<DBNode>(entity);
-                    System.out.println("3");
-                    Notification notification = new Notification(NotificationCode.CREATE_NODE,entity);
-                    notifySubscribers(notification);
-                }
-            }
-        }
-    }
+
 }

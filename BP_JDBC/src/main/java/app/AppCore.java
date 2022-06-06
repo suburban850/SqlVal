@@ -101,18 +101,6 @@ public class AppCore extends PublisherImplementation{
         return ir;
     }
 
-    public void addNode(DBNode node)
-    {
-        System.out.println("DBNODEE " + node.getName());
-        TreeItem entity = new TreeItem(node,node.getName());
-        if(tree instanceof TreeImplementation)
-        {
-            TreeImplementation t = (TreeImplementation) tree;
-            TreeItem k = t.getKoren();
-            t.addtoroot(k, entity);
-        }
-    }
-
     public void readDataFromTable(String fromTable){
 
         tableModel.setRows(this.database.readDataFromTable(fromTable));
@@ -124,16 +112,5 @@ public class AppCore extends PublisherImplementation{
     {
         tableModel.setRows(this.database.checkDatabase(sql));
     }
-
-    public void smt(String query)
-    {
-        if(database instanceof DatabaseImplementation)
-        {
-            DatabaseImplementation di = (DatabaseImplementation) database;
-            di.checkk(query);
-        }
-    }
-
-
 
 }

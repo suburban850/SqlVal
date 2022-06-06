@@ -21,31 +21,6 @@ import java.util.List;
 public class DescriptionRepository {
     private  ObjectMapper objectMapper = new ObjectMapper();
     private  List<DBpojo> POJOSSS = getPojos();
-
-    public String readFromJson(File file)
-    {
-        try {
-            URL url = null;
-            BufferedReader br = new BufferedReader(new FileReader(new File(url.toURI())));
-
-            //BufferedReader br = new BufferedReader(new FileReader("javd.txt"));
-            StringBuilder sb = new StringBuilder();
-            String s = "";
-            while ((s = br.readLine()) != null)
-            {
-                sb.append(s);
-            }
-            System.out.println(sb.toString());
-            return sb.toString();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 //
     public List<DBpojo> getPojos() {
         List<DBpojo> pojos = null;

@@ -53,7 +53,7 @@ public class ExistsRule implements Rule{
         int signIndex= 0;
         for(int i = whereIndex; i<sk.length;i++)
         {
-            if(sk[i].equals("=") || sk[i].equals("like") || sk[i].equals("in"))
+            if(sk[i].equals("=") || sk[i].equals("like") || sk[i].equals("in") || sk[i].equals(">") || sk[i].equals("<"))
             {
                 signIndex =i;
                 break;

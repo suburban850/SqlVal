@@ -300,6 +300,22 @@ public class MYSQLrepository implements Repository{
 
     @Override
     public List<Row> check(String sql) {
+        String temp = sql.trim();
+        String[] spliff = sql.split(" ");
+        String name = "";
+        int index= 0;
+       for(int i = 0; i<spliff.length;i++)//select * from hr.employees
+       {
+           if(spliff[i].equals("from"))
+           {
+                  index = i+1;
+           }
+       }
+        String split ="";
+       if(index!=spliff.length-1) {
+           split = spliff[index].split("\\.")[1];
+       }
+        System.out.println("NAME: " + name);
         List<Row> rows = new ArrayList<>();
         try {
             this.initConnection();
@@ -312,7 +328,7 @@ public class MYSQLrepository implements Repository{
             while (rs.next()) {
 
                 Row row = new Row();
-                row.setName("countries");
+                row.setName(split);
 
                 for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
                     //ime kolone, objekat konkretnog podatka

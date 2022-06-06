@@ -9,5 +9,20 @@
     "type" : "ORDER",
     "desc" : "Wrong order in the statement",
     "sug"  : "This statement %s should go before this one %s"
+  },
+  {
+    "type": "NECESARY",
+    "desc": "You are missing a keywoard",
+    "sug" : "You have to add %s"
+  },
+  {
+    "type": "WHERE",
+    "desc": "You have an aggregated column in where expression",
+    "sug" : "You have to add %s"
+  },
+  {
+    "type": "EXIST",
+    "desc": "if this exists %s this must too" ,
+    "sug" : "Add necesary expressions"
   }
 ]

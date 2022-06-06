@@ -35,6 +35,7 @@ public class RunAction extends DBAbstractAction{
        InformationResource ir = (InformationResource) MainFrame.getInstance().getAppCore().getInformationResource();
         System.out.println(ir);
         //MainFrame.getInstance().getAppCore().smt(sqlStatement);
+        sqlStatement.toLowerCase();
         MainFrame.getInstance().getAppCore().run(sqlStatement.trim(), ir);
 
     }

@@ -28,6 +28,8 @@ public class ContainsRule implements Rule{
         if(query[1].trim().equals("*")) return "true";//ako je zvezda mora da je tacno
          for(int i = 1; i<query.length;i++)
          {
+             if(query[i].contains("(") || query[i].contains(")")) continue;
+
              if(query[i+1].equals("from"))
              {
                  columns.add(query[i]);

@@ -1,8 +1,6 @@
 package checker;
 
-import checker.rules.ContainsRule;
-import checker.rules.OrderRule;
-import checker.rules.Rule;
+import checker.rules.*;
 import lombok.Getter;
 import lombok.Setter;
 import resource.implementation.InformationResource;
@@ -25,6 +23,10 @@ public class Checker {
 
         rules.add(new ContainsRule(descriptionRepository));
         rules.add(new OrderRule(descriptionRepository));
+        rules.add(new NecesaryRule(descriptionRepository));
+        rules.add(new WhereRule(descriptionRepository));
+        rules.add(new ExistsRule(descriptionRepository));
+
     }
 
     public void check(String sql, InformationResource ir)

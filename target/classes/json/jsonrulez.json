@@ -1,0 +1,13 @@
+
+[
+  {
+    "type" : "%s",
+    "desc" : "The column: %s doesn't exist in this table: %s",
+    "sug" : "Try harder "
+  },
+  {
+    "type" : "ORDER",
+    "desc" : "Wrong order in the statement",
+    "sug"  : "This statement %s should go before this one %s"
+  }
+]

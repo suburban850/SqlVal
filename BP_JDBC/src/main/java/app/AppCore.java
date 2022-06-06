@@ -28,7 +28,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.xml.stream.events.EndElement;
 import java.sql.Connection;
 import java.util.List;
-
+//
 @Getter
 @Setter
 public class AppCore extends PublisherImplementation{

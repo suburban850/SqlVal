@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+//
 public class DBpojo {
     private String type;
     private String desc;

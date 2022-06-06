@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Stack;
 @Getter
 @Setter
+//
 public class Checker {
     private Stack stack;
     private List<Rule> rules;

@@ -10,7 +10,7 @@ import resource.implementation.InformationResource;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
-
+//
 public class ContainsRule implements Rule{
     //da li kolone i tabele koje su navedene postoje u bazi
     private DescriptionRepository descriptionRepository;

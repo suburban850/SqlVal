@@ -146,7 +146,6 @@ public class MYSQLrepository implements Repository{
 
         List<Row> rows = new ArrayList<>();
 
-
         try{
             this.initConnection();
 
@@ -297,23 +296,42 @@ public class MYSQLrepository implements Repository{
             this.closeConnection();
         }
     }
+    private ArrayList<Row> rsss= new ArrayList<>();
 
     @Override
-    public void check(String sql)  {
+    public List<Row> check(String sql) {
+        List<Row> rows = new ArrayList<>();
         try {
             this.initConnection();
-            Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            System.out.println("sql executovan");
+            String query = sql;
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet rs = preparedStatement.executeQuery();
+            ResultSetMetaData resultSetMetaData = rs.getMetaData();
+
+            //cursor se pomera po redovima
+            while (rs.next()) {
+
+                Row row = new Row();
+                row.setName("countries");
+
+                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                    //ime kolone, objekat konkretnog podatka
+                    //rs.getString(columnIndex:1)
+                    //rs.getString(employeeId)
+                    row.addField(resultSetMetaData.getColumnName(i), rs.getString(i));
+                }
+                rows.add(row);
+            }
+            return rows;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             this.closeConnection();
         }
+        return rows;
     }
-
 
     private List<String> getTypes( String tableName) {
         List<String> columnTypes = new ArrayList<>();
@@ -433,7 +451,6 @@ public class MYSQLrepository implements Repository{
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
             ResultSetMetaData rsmd = rs.getMetaData();
-
             int columnCount = rsmd.getColumnCount();
             for (int i = 1; i <= columnCount; i++ ) {
                 String name = rsmd.getColumnName(i);

@@ -17,5 +17,5 @@ public interface Repository {
     //ako dodje do promene baze ostace implementacija za citanje csv file-a
     void bulkrep(List<String[]> rows, Entity entity);
 
-    void check(String sql);
+    List<Row> check(String sql);
 }

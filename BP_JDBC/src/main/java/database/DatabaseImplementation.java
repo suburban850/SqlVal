@@ -39,8 +39,8 @@ public class DatabaseImplementation implements Database {
     }
 
     @Override
-    public void checkDatabase(String sql) {
-        this.repository.check(sql);
+    public List<Row> checkDatabase(String sql) {
+       return this.repository.check(sql);
     }
 
 

@@ -16,6 +16,7 @@ import observer.Notification;
 import observer.enums.NotificationCode;
 import observer.implementation.PublisherImplementation;
 import resource.DBNode;
+import resource.data.Row;
 import resource.implementation.Entity;
 import resource.implementation.InformationResource;
 import tree.Tree;
@@ -65,7 +66,7 @@ public class AppCore extends PublisherImplementation{
             }
         }
         if(error_mesages.isEmpty()){
-            this.database.checkDatabase(sql);
+            whyread(sql);
         }else{
             Notification notification = new Notification(NotificationCode.ERROR_MSG, error_mesages);
             notifySubscribers(notification);
@@ -73,16 +74,7 @@ public class AppCore extends PublisherImplementation{
     }
 
 
-    public void addEntity(String name, InformationResource irs)
-    {//root
-        if(irs instanceof InformationResource)
-        {
-            System.out.println("2");
-            ((InformationResource) irs).importChild(new Entity(name,irs));
-          //  SwingUtilities.updateComponentTreeUI();
 
-        }
-    }
 
     public void bulk(List<String[]> rows, Entity entity)
     {
@@ -127,6 +119,10 @@ public class AppCore extends PublisherImplementation{
 
         //Zasto ova linija moze da ostane zakomentarisana?
         //this.notifySubscribers(new Notification(NotificationCode.DATA_UPDATED, this.getTableModel()));
+    }
+    public void whyread(String sql)
+    {
+        tableModel.setRows(this.database.checkDatabase(sql));
     }
 
     public void smt(String query)

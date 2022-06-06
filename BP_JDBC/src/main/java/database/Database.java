@@ -16,5 +16,5 @@ public interface Database{
 
     void bulkImport(List<String[]> rows, Entity entity);
 
-    void checkDatabase(String sql);
+    List<Row> checkDatabase(String sql);
 }

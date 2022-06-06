@@ -1,6 +1,7 @@
 package app;
 
 
+import checker.Checker;
 import database.Database;
 import database.DatabaseImplementation;
 import database.MYSQLrepository;
@@ -39,14 +40,21 @@ public class AppCore extends PublisherImplementation{
     private Tree tree;
     //brisanje mozda?
     private  TreeItem<DBNode> root;
-
+    private Checker checker;
     public AppCore() {
         this.settings = initSettings();
         this.database = new DatabaseImplementation(new MYSQLrepository(this.settings));
         this.tableModel = new TableModel();
         this.tree = new TreeImplementation();
+        this.checker = new Checker();
 
     }
+
+    public void run(String sql, InformationResource ir)
+    {
+        checker.check(sql,ir);
+    }
+
 
     public void addEntity(String name, InformationResource irs)
     {//root

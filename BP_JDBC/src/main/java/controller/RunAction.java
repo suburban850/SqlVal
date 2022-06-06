@@ -5,6 +5,8 @@ import database.DatabaseImplementation;
 import database.MYSQLrepository;
 import gui.MainFrame;
 import lombok.Data;
+import resource.DBNode;
+import resource.implementation.InformationResource;
 import state.EditorState;
 
 import javax.swing.*;
@@ -30,8 +32,10 @@ public class RunAction extends DBAbstractAction{
     @Override
     public void actionPerformed(ActionEvent e) {
        String sqlStatement =  MainFrame.getInstance().getEditorView().getTextArea().getText();
-        MainFrame.getInstance().getAppCore().smt(sqlStatement);
-
+       InformationResource ir = (InformationResource) MainFrame.getInstance().getAppCore().getInformationResource();
+        System.out.println(ir);
+        //MainFrame.getInstance().getAppCore().smt(sqlStatement);
+        MainFrame.getInstance().getAppCore().run(sqlStatement.trim(), ir);
 
     }
 }

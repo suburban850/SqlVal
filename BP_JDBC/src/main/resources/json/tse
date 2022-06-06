@@ -1,0 +1,13 @@
+
+[
+  {
+    "type" : "NO_COLUMN",
+    "desc" : "No column found",
+    "sug" : "Find column"
+  },
+  {
+    "type" : "NO_TABLE",
+    "desc" : "No column found found",
+    "sug" : "Find columndasd"
+  }
+]

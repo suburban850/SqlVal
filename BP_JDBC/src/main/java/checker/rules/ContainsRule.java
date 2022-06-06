@@ -21,10 +21,11 @@ public class ContainsRule implements Rule{
 
     //select country_id, country_name from bp_tim68.countries
     @Override
-    public void check(String sql, InformationResource ir) {
+    public String check(String sql, InformationResource ir) {
          String[] query = sql.split(" ");
         List<String> columns = new ArrayList<>();
         int f = 0;
+        if(query[1].trim().equals("*")) return "true";//ako je zvezda mora da je tacno
          for(int i = 1; i<query.length;i++)
          {
              if(query[i+1].equals("from"))
@@ -66,7 +67,7 @@ public class ContainsRule implements Rule{
             //posalji negde table NO_TABLE JSON
             pojo.setDesc("Table doesn't exist");
             System.out.printf(pojo.toString(),"NO_TABLE");
-            return;
+            return pojo.toString();
         }
         for(int i =0; i<columns.size();i++)
         {
@@ -77,10 +78,12 @@ public class ContainsRule implements Rule{
                //posalji negde newColumns.get(i) JSON
                //NO_TYPE
                System.out.printf(pojo.toString(),"NO_COLUMNS",newColumns.get(i),entity.getName());
-               return;
+               pojo.setType("NO_COLUMN");
+               pojo.setDesc("The column " + newColumns.get(i) + " doesn't exist in this table " + tableName);
+               return pojo.toString();
            }
         }
         System.out.println("ima i tabelu i kolonu");
-
+        return "true";
     }
 }

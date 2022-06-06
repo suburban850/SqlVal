@@ -21,10 +21,9 @@ public class OrderRule implements Rule{
         this.descriptionRepository = descriptionRepository;
     }
     //select column names from hr.emplu where hr employees like
-
-    //todo orderby
+    //todo orderby group by
     @Override
-    public void check(String s, InformationResource ir) {
+    public String check(String s, InformationResource ir) {
         DBpojo pojo = descriptionRepository.getPOJOSSS().get(1);
          List<Integer> ints = new ArrayList<>();
 
@@ -76,11 +75,12 @@ public class OrderRule implements Rule{
                   pojo.setSug("Keyword that has a priority of " +ints.get(i) + " should go after " + ints.get(i+1));
                   System.out.println(pojo.toString());;
                   //return pojoToString ili stavi u globalnu listu i onda stampaj na view ako je pun STACK!!!!
-                  return;
+                  return pojo.toString();
               }
           }
       }else{
-          System.out.println("true");
+          return "true";
       }
+      return "true";
     }
 }

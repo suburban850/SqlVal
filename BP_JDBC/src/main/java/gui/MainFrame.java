@@ -33,6 +33,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.List;
 
 @Getter
 @Setter
@@ -184,43 +185,6 @@ public class MainFrame extends JFrame implements Subscriber {
     }
 
 
-    public static void visitAllNodes(TreeNode node) {
-        System.out.println(node);
-        if (node.getChildCount() >= 0) {
-            for (Enumeration e = node.children(); e.hasMoreElements(); ) {
-                TreeItem n = (TreeItem) e.nextElement();
-                visitAllNodes(n);
-            }
-        }
-    }
-
-
-
-    public void traverse(JTree tree) {
-        TreeModel model = tree.getModel();
-        if (model != null) {
-            Object root = model.getRoot();
-            System.out.println(root.toString());
-            walk(model,root);
-        }
-        else
-            System.out.println("Tree is empty.");
-    }
-
-    protected void walk(TreeModel model, Object o){
-        int  cc;
-        cc = model.getChildCount(o);
-        for( int i=0; i < cc; i++) {
-            Object child = model.getChild(o, i );
-            if (model.isLeaf(child))
-                System.out.println(child.toString());
-            else {
-                System.out.print(child.toString()+"--");
-                walk(model,child );
-            }
-        }
-    }
-
     @Override
     public void update(Notification notification) throws IOException {
         if(notification.getCode().equals(NotificationCode.EDITOR) && stateManager.getCurr() instanceof ViewState)
@@ -257,24 +221,22 @@ public class MainFrame extends JFrame implements Subscriber {
             this.repaint();
             this.revalidate();
 
-        }else if(notification.getCode().equals(NotificationCode.BULK))
+        }else if(notification.getCode().equals(NotificationCode.ERROR_MSG))
         {
-            try {
-
-            }catch (Exception e)
+            List<String> errors = (List<String>) notification.getData();
+            StringBuilder sb = new StringBuilder();
+            int i =1;
+            for(String s : errors)
             {
-                e.printStackTrace();
+                System.out.println("error :  "  +s);
+                sb.append(i+".");
+                sb.append("\n");
+                sb.append(s);
+                sb.append("\n");
+                i++;
             }
-        }else if(notification.getCode().equals(NotificationCode.CREATE_NODE))
-        {
-            if(!(notification.getData() instanceof Entity)) return;
-            else {
-                appCore.addNode((Entity)notification.getData());
-                DefaultTreeModel df = (DefaultTreeModel) jTree.getModel();
-                traverse(jTree);
+            JOptionPane.showMessageDialog(this, sb.toString(),"Error",JOptionPane.ERROR_MESSAGE);
 
-                jTree.expandRow(0);
-            }
         }
     }
 }

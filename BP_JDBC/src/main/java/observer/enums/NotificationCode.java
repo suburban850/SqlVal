@@ -7,5 +7,6 @@ public enum NotificationCode {
     VIEW,
     BULK,
     RUN,
-    CREATE_NODE
+    CREATE_NODE,
+    ERROR_MSG
 }

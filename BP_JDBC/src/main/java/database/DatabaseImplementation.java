@@ -38,8 +38,13 @@ public class DatabaseImplementation implements Database {
         this.repository.bulkrep(rows,entity);
     }
 
+    @Override
+    public void checkDatabase(String sql) {
+        this.repository.check(sql);
+    }
 
-    public void check(String query)
+
+    public void checkk(String query)
     {
         if(this.repository instanceof MYSQLrepository)
         {

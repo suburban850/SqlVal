@@ -27,6 +27,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
 import javax.xml.stream.events.EndElement;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 //
 @Getter
@@ -53,6 +54,22 @@ public class AppCore extends PublisherImplementation{
     public void run(String sql, InformationResource ir)
     {
         checker.check(sql,ir);
+        List<String> error_mesages = new ArrayList<>();
+        while(!checker.getStack().isEmpty())
+        {
+            String s = checker.getStack().pop();
+            System.out.println("SSS: " +s);
+            if(!s.equals("true"))
+            {
+                error_mesages.add(s);
+            }
+        }
+        if(error_mesages.isEmpty()){
+            this.database.checkDatabase(sql);
+        }else{
+            Notification notification = new Notification(NotificationCode.ERROR_MSG, error_mesages);
+            notifySubscribers(notification);
+        }
     }
 
 
@@ -117,7 +134,7 @@ public class AppCore extends PublisherImplementation{
         if(database instanceof DatabaseImplementation)
         {
             DatabaseImplementation di = (DatabaseImplementation) database;
-            di.check(query);
+            di.checkk(query);
         }
     }
 

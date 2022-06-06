@@ -14,11 +14,12 @@ import java.util.Stack;
 @Setter
 //
 public class Checker {
-    private Stack stack;
+    private Stack<String> stack;
     private List<Rule> rules;
     private DescriptionRepository descriptionRepository;
     public Checker()
     {
+        stack = new Stack<>();
         rules = new ArrayList<>();
         descriptionRepository = new DescriptionRepository();
 
@@ -30,7 +31,8 @@ public class Checker {
     {
         for(Rule r : rules)
         {
-            r.check(sql,ir);
+            String s = r.check(sql,ir);
+            stack.push(s);
         }
     }
 }

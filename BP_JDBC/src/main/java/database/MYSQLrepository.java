@@ -298,6 +298,22 @@ public class MYSQLrepository implements Repository{
         }
     }
 
+    @Override
+    public void check(String sql)  {
+        try {
+            this.initConnection();
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            System.out.println("sql executovan");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }finally {
+            this.closeConnection();
+        }
+    }
+
 
     private List<String> getTypes( String tableName) {
         List<String> columnTypes = new ArrayList<>();

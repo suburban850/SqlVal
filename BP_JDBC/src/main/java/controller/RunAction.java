@@ -31,7 +31,8 @@ public class RunAction extends DBAbstractAction{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-       String sqlStatement =  MainFrame.getInstance().getEditorView().getTextArea().getText();
+       String sqlStatement = MainFrame.getInstance().getEditorView().getTextArea().getText();
+        System.out.println("SQL STATEMENT:  " + sqlStatement);
        InformationResource ir = (InformationResource) MainFrame.getInstance().getAppCore().getInformationResource();
         System.out.println(ir);
         //MainFrame.getInstance().getAppCore().smt(sqlStatement);

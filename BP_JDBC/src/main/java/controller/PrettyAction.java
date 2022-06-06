@@ -26,8 +26,8 @@ public class PrettyAction extends DBAbstractAction{
         StyleContext sc = StyleContext.getDefaultStyleContext();
         AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
 
-        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
-        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+     //   aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+     //   aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
 
         int len = tp.getDocument().getLength();
         tp.setCaretPosition(len);
@@ -40,9 +40,10 @@ public class PrettyAction extends DBAbstractAction{
         s=s.toLowerCase();
         return s.equals
                 ("select") || s.equals("from") || s.equals("where")
-                || s.equals("in") || s.equals("groupby") || s.equals("max")
+                || s.equals("in") || s.equals("group by") || s.equals("max")
                 || s.equals("min") || s.equals("avg") || s.equals("count")
-                || s.equals("having") || s.equals("order by") || s.equals("on");
+                || s.equals("having") || s.equals("order by") || s.equals("on") ||s.equals("like")
+                || s.equals("and") || s.equals("or");
 
     }
 
@@ -66,7 +67,7 @@ public class PrettyAction extends DBAbstractAction{
             }else{
                 appendToPane(MainFrame.getInstance().getEditorView().getTextArea(),arr[i],Color.BLACK);
             }
-            appendToPane(MainFrame.getInstance().getEditorView().getTextArea()," ",Color.BLACK);
+            appendToPane(MainFrame.getInstance().getEditorView().getTextArea(),"\n",Color.BLACK);
 
         }
 

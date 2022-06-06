@@ -34,8 +34,8 @@ public class WhereRule implements Rule{
             return "true";
         }
 
-        if(sk[whereIndex+1].substring(0,2).equals("max") || sk[whereIndex+1].substring(0,2).equals("min") ||sk[whereIndex+1].substring(0,2).equals("avg") ||sk[whereIndex+1].substring(0,4).equals("count")
-      ||  sk[whereIndex+1].substring(0,2).equals("sum"))
+        if(sk[whereIndex+1].contains("max") || sk[whereIndex+1].contains("min") ||sk[whereIndex+1].contains("avg") ||sk[whereIndex+1].contains("count")
+      ||  sk[whereIndex+1].contains("sum"))
         {
             dBpojo.setSug("AND OR: column name: contains aggregation " + sk[whereIndex+1]);
             return dBpojo.toString();
